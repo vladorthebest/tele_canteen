@@ -1,3 +1,4 @@
+from email import message
 import urllib
 import requests
 from bs4 import BeautifulSoup as BS
@@ -11,6 +12,7 @@ def save_img(item):
     img_file = open(img_path, 'wb')
     img_file.write(img.content)
     img_file.close()
+    return 'img\ ' + item.find('h4').get_text(strip = True) + '.jpg'
 
 
 def day():
@@ -19,12 +21,13 @@ def day():
 
 
 def print_menu(count):
-
+    message_menu = ''
     for item in count:
         for countent in item.values():
-            print(countent)
-        
-        print()
+            message_menu += countent + '\n'
+        message_menu += '\n'
+    
+    return message_menu
 
 
 def parse():
@@ -37,16 +40,18 @@ def parse():
     count = []
 
     for item in items:
-        save_img(item) 
+        path_img = save_img(item) 
         count.append({
             'title': item.find('h4').get_text(strip = True),
             'menu': item.find('p',  class_="desc").get_text(strip = True),
-            'price': item.find('span', class_="price").get_text(strip = True), 
+            'price': item.find('span', class_="price").get_text(strip = True),
+            'path': path_img,
         
     })
 
-    print_menu(count)
+
+    return count
 
 
-
-parse()
+if __name__ == '__main__':
+    print(parse())
