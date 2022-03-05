@@ -1,5 +1,4 @@
-from email import message
-import urllib
+import bd
 import requests
 from bs4 import BeautifulSoup as BS
 from datetime import datetime
@@ -37,21 +36,17 @@ def parse():
     id_today = 'day-' + str(day())
     blok = html.find(id = id_today)
     items = blok.find_all('div', class_='col-lg-6 col-md-6 col-sm-6')
-    count = []
 
     for item in items:
         path_img = save_img(item) 
-        count.append({
-            'title': item.find('h4').get_text(strip = True),
-            'menu': item.find('p',  class_="desc").get_text(strip = True),
-            'price': item.find('span', class_="price").get_text(strip = True),
-            'path': path_img,
+        title = item.find('h4').get_text(strip = True)
+        menu = item.find('p',  class_="desc").get_text(strip = True)
+        price = item.find('span', class_="price").get_text(strip = True)
         
-    })
-
-
-    return count
+        bd.set_bd(title, menu, price, path_img)
+    
 
 
 if __name__ == '__main__':
     print(parse())
+    bd.output_bd()

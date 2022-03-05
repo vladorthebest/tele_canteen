@@ -1,28 +1,36 @@
+import parse
 import telebot
 import config
-import parse
+
 
 bot = telebot.TeleBot(config.TOKEN)
+
+
+def build_item(item):
+    message_menu = ''
+    title = item['title']
+    menu = item['menu']
+    price = item['price']
+    
+    message_menu +=  f'📄  {title} \n\n'
+    message_menu +=  f'🍽  {menu} \n'
+    message_menu +=  f'💵💵💵  {price} \n'
+    return message_menu
+
 
 @bot.message_handler(commands=['menu'])
 def menu(message):
 
-    
+    parse.parse()
 
-    count = parse.parse()
     for item in count:
-        message_menu = ''
-
         
-        for key, countent in item.items():
-            if key != 'path':
-                message_menu += countent + '\n'
-            else:
-                photo = open(countent, 'rb')
-                bot.send_photo(message.chat.id, photo)
+        photo = open(item['path'], 'rb')
+        bot.send_photo(message.chat.id, photo)
 
+        message_menu = build_item(item)      
         bot.send_message(message.chat.id, message_menu)
    
 
-
-bot.polling(none_stop=True)
+if __name__ == '__main__':
+    bot.polling(none_stop=True)
